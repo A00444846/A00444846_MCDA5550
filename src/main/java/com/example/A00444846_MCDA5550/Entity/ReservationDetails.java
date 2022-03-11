@@ -1,7 +1,5 @@
 package com.example.A00444846_MCDA5550.Entity;
 
-import org.springframework.context.annotation.EnableMBeanExport;
-
 import javax.persistence.*;
 import java.util.List;
 
@@ -12,8 +10,11 @@ public class ReservationDetails {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
     private int hotel_id;
+    @Column(nullable = false)
     private String checkin;
+    @Column(nullable = false)
     private String checkout;
+
     @OneToMany(targetEntity = GuestDetails.class, cascade = CascadeType.ALL)
     @JoinColumn(name = "reservation_id")
     private List<GuestDetails> guestDetails;

@@ -9,7 +9,9 @@ public class GuestDetails {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
     private int reservation_id;
+    @Column(nullable = false)
     private String guest_name;
+    @Column(nullable = false)
     private String gender;
 
     public int getReservation_id() {

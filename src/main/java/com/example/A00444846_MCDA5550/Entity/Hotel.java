@@ -1,7 +1,5 @@
 package com.example.A00444846_MCDA5550.Entity;
 
-import org.springframework.lang.Nullable;
-
 import javax.persistence.*;
 import java.util.List;
 
@@ -11,23 +9,24 @@ public class Hotel {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
+    @Column(unique = true ,nullable = false)
     private String hotel_name;
+    @Column(nullable = false)
     private int price;
-
-    public Hotel() {
-    }
-
+    @Column(nullable = false)
     private Boolean availability;
+
     @OneToMany(targetEntity = ReservationDetails.class , cascade = CascadeType.ALL)
     @JoinColumn(name = "hotel_id")
     private List<ReservationDetails> reservationDetails;
 
+    public Hotel() {
+    }
 
-    public Hotel(String hotel_name, int price, Boolean availability, List<ReservationDetails> reservationDetails) {
+    public Hotel(String hotel_name, int price, Boolean availability) {
         this.hotel_name = hotel_name;
         this.price = price;
         this.availability = availability;
-        this.reservationDetails = reservationDetails;
     }
 
     public String getHotel_name() {
