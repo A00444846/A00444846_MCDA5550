@@ -9,6 +9,13 @@ public class GuestDetails {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
     private int reservation_id;
+
+    public GuestDetails(String guest_name, String gender, int reservation_id) {
+        this.guest_name = guest_name;
+        this.gender = gender;
+        this.reservation_id = reservation_id;
+    }
+
     @Column(nullable = false)
     private String guest_name;
     @Column(nullable = false)

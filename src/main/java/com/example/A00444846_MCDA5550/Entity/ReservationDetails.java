@@ -19,6 +19,14 @@ public class ReservationDetails {
     @JoinColumn(name = "reservation_id")
     private List<GuestDetails> guestDetails;
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public int getHotel_id() {
         return hotel_id;
     }
@@ -43,11 +51,13 @@ public class ReservationDetails {
         this.checkout = checkout;
     }
 
-    public List<GuestDetails> getGuestDetails() {
-        return guestDetails;
-    }
-
-    public void setGuestDetails(List<GuestDetails> guestDetails) {
-        this.guestDetails = guestDetails;
+    @Override
+    public String toString() {
+        return "ReservationDetails{" +
+                "id=" + id +
+                ", hotel_id=" + hotel_id +
+                ", checkin='" + checkin + '\'' +
+                ", checkout='" + checkout + '\'' +
+                '}';
     }
 }

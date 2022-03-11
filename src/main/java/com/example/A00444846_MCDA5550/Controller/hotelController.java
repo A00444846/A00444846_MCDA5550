@@ -1,13 +1,16 @@
 package com.example.A00444846_MCDA5550.Controller;
 
-import com.example.A00444846_MCDA5550.AccessingData.hotelRepository;
-import com.example.A00444846_MCDA5550.Entity.Hotel;
+import com.example.A00444846_MCDA5550.DbOperation.HotelRepository;
+import com.example.A00444846_MCDA5550.DbOperation.ReservationDetailsRepository;
 import com.example.A00444846_MCDA5550.TypeConvertion.HotelObjTypeConversion;
+import com.example.A00444846_MCDA5550.DbOperation.InsertReservationAndGuestDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,16 +23,28 @@ public class hotelController {
     }
 
     @Autowired
-    private hotelRepository hotelRepository;
+    private HotelRepository hotelRepository;
+    @Autowired
+    private ReservationDetailsRepository reservationDetailsRepository;
+    @Autowired
+    private InsertReservationAndGuestDetails insertReservationDetails;
 
     @GetMapping("/getListOfHotels")
-    public List<Map<String, Object>> getListOfHotels(){
-        return HotelObjTypeConversion.convertListToMap(hotelRepository.getHotelList());
+    public Map<String, List> getListOfHotels(){
+        return new HashMap<>() {{
+            put("hotels_list", HotelObjTypeConversion.convertListToMap(hotelRepository.getHotelList()));
+        }};
     }
 
     @RequestMapping(value = "/reservationConfirmation", method = RequestMethod.POST, consumes = "application/json")
-    public String reservationConfirmation(Object obj){
-//        hotelRepository.save(hotel);
-        return "Success";
+    @Transactional(rollbackOn = Exception.class)
+    public String reservationConfirmation(@RequestBody Map<String, Object> parameterMap){
+
+        if(parameterMap.get("hotel_name") == null || parameterMap.get("hotel_name").toString().trim().length() == 0){
+
+        }
+            parameterMap.put("hotel_id", hotelRepository.getHotelId((String) parameterMap.get("hotel_name")));
+            insertReservationDetails.insertReservationAndGuestDetails(parameterMap);
+            return "Success";
     }
 }
