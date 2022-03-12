@@ -2,7 +2,9 @@ package com.example.A00444846_MCDA5550.DbOperation;
 
 import com.example.A00444846_MCDA5550.Entity.GuestDetails;
 import com.example.A00444846_MCDA5550.Entity.ReservationDetails;
+import com.example.A00444846_MCDA5550.ResponseType.ErrorResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -17,22 +19,31 @@ public class InsertReservationAndGuestDetails {
     @Autowired
     private GuestRepository guestRepository;
 
-    public void insertReservationAndGuestDetails(Map<String, Object> parameterMap){
-        ReservationDetails reservationDetailsObj = new ReservationDetails();
+    public int insertReservationAndGuestDetails(Map<String, Object> parameterMap) {
+        try {
+            ReservationDetails reservationDetailsObj = new ReservationDetails();
 
-        reservationDetailsObj.setHotel_id((Integer) parameterMap.get("hotel_id"));
-        reservationDetailsObj.setCheckin((String) parameterMap.get("checkin"));
-        reservationDetailsObj.setCheckout((String) parameterMap.get("checkout"));
-        ReservationDetails insertedReservationDetails =  reservationDetailsRepository.save(reservationDetailsObj);
-//        System.out.println(insertedReservationDetails.toString());
+            reservationDetailsObj.setHotel_id((Integer) parameterMap.get("hotel_id"));
+            reservationDetailsObj.setCheckin((String) parameterMap.get("checkin"));
+            reservationDetailsObj.setCheckout((String) parameterMap.get("checkout"));
+            ReservationDetails insertedReservationDetails = reservationDetailsRepository.save(reservationDetailsObj);
+//          System.out.println(insertedReservationDetails.toString());
 
-        List<GuestDetails> guestDetailsObjList = new ArrayList<>();
-        List<Map> guestMapList = (List<Map>) parameterMap.get("guests_list");
-        GuestDetails guestDetailsObj;
-        for(Map map : guestMapList){
-            guestDetailsObj = new GuestDetails((String) map.get("guest_name"), (String) map.get("gender"), insertedReservationDetails.getId());
-            guestDetailsObjList.add(guestDetailsObj);
+            try {
+                List<GuestDetails> guestDetailsObjList = new ArrayList<>();
+                if (parameterMap.get("guests_list") != null) {
+                    List<Map> guestMapList = (List<Map>) parameterMap.get("guests_list");
+                    for (Map map : guestMapList) {
+                        guestDetailsObjList.add(new GuestDetails((String) map.get("guest_name"), (String) map.get("gender"), insertedReservationDetails.getId()));
+                    }
+                    guestRepository.saveAll(guestDetailsObjList);
+                }
+            } catch (Exception e) {
+            } finally {
+                return insertedReservationDetails.getId();
+            }
+        } catch (Exception e) {
+            return -1;
         }
-        guestRepository.saveAll(guestDetailsObjList);
     }
 }
